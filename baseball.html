@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Angular CDN -->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+    <!-- Bootstrap CDN -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <!-- CSS -->
+    <link rel="stylesheet" href="kgBaseball.css">
+    <!-- Scripts -->
+    <script src="kgBaseball.js"></script>
+</head>
+
+<body>
+	<div ng-app="kgBaseball" ng-controller="mainCtrl">
+		<div class="container container-fluid">
+			<div class="row">
+				<div class="col-sm-2"></div>
+				<div class="col-sm-10">
+					<h1><strong>MLB Baseball Statistics</strong></h1>
+					<span><strong> Created by Darren Laser - Konrad Group - Test Assignment </strong></span>
+					<h3><strong>Select a date:</strong></h3>
+				</div>
+			</div>
+
+			<!-- Date selection -->
+			<div class="container">
+				<div class="row">
+					<div class="col-sm-2"></div>
+					<div class="col-sm-10">
+						<form class="form-inline">
+							<div class="form-group">
+								<h4><strong>Year:&nbsp;</strong><h4>
+							</div>
+							<div class="form-group">
+								<select class="form-control" ng-model="year" ng-change="loadDate('month')"
+								ng-options="y for y in yArray" ng-disabled="gameView"></select>
+							</div>
+							<div class="form-group" ng-show="monthLoaded">
+								<h4><strong>&nbsp;Month:&nbsp;</strong><h4>
+							</div>
+							<!-- Trigger the loadDay function to load # of days in specific month with index -->
+							<div class="form-group" ng-show="monthLoaded">
+								<select class="form-control" ng-model="month" 
+								ng-options="m for m in mArray" ng-change="loadDate('day')"
+								ng-disabled="gameView"></select>
+							</div>
+							<div class="form-group" ng-show="dayLoaded">
+								<h4><strong>&nbsp;Day:&nbsp;</strong><h4>
+							</div>
+							<div class="form-group" ng-show="dayLoaded">
+								<select class="form-control" ng-model="day" 
+								ng-options="d for d in dArray" ng-change="dispSearch()"
+								ng-disabled="gameView"></select>
+							</div>
+							<div class="form-group" ng-show="gameListButton && daySelected">
+								<h4><strong>&nbsp;Favourite Team:&nbsp;</strong><h4>
+							</div>
+							<div class="form-group" ng-show="gameListButton && daySelected">
+								<select class="form-control" ng-model="favouriteTeam" 
+									ng-options="t for t in teamList" 
+									ng-click="orderByTeam()"></select>
+							</div>
+							<div class="form-group" ng-if="gameListButton && daySelected">
+								&nbsp;<button class="btn btn-default" 
+								ng-click="getGameListDataSet(year, month, day)">
+									<strong>Load Data</strong>
+								</button>
+							</div>
+							<div class="form-group" ng-if="!gameListView && gamesList">
+								&nbsp;<button class="btn btn-default" ng-click="viewGameList()">
+									<strong>View Game List</strong>
+								</button>
+							<div>
+						</form>
+					</div>
+				</div>
+			</div>
+
+			<!-- Date display -->
+			<div class="container date-display">
+				<div class="row" ng-if="gameListView">
+					<div class="col-sm-12 center-text">
+						<form class="form-inline">
+							<div ng-if='selectedDate !== ""'>
+								<div class="col-sm-3"></div>
+								<div class="form-group col-sm-1 center-text">
+									<strong><a class="arrows" ng-click="changeDate(0)"><<</a></strong>
+								</div>
+								<div class="form-group col-sm-4 center-text">
+									<span style="font-size: 20px;"><strong>{{selectedDate}}</strong></span>
+								</div>
+								<div class="form-group col-sm-1 center-text">
+									<strong><a class="arrows" ng-click="changeDate(1)">>></a></strong>
+								</div>
+								<div class="col-sm-3"></div>
+							</div>
+						</form>
+					</div>
+				</div>	
+			</div>
+			<br>
+
+			<!-- Games list view -->
+			<div class="container container-fluid" ng-if="gamesList && gameListView">
+				<div class="row">
+					<div class="col-sm-4"></div>
+					<!-- Bolding style conditions for winner based on scores -->
+					<div class="col-sm-4 scroll-div gamelist-text-size">
+						<div class="row hover_obj" ng-repeat="game in listOfGames" 
+						ng-click="getGameStatsDataSet(game.game_data_directory)">
+							<div class="row">
+								<div class="col-sm-3"></div>
+								<div class="col-sm-5" ng-if="game.winner === 'h'">
+									{{game.away_team_name}}
+								</div>
+								<div class="col-sm-5" ng-if="game.winner === 'a'">
+			                    	<strong>{{game.away_team_name}}</strong>
+			                    </div>
+			                    <div class="col-sm-5" ng-if="game.winner === 'u'">
+			                    	{{game.away_team_name}}
+			                    </div>
+			                    <div class="col-sm-4">
+			                    	{{game.linescore.r.away}}
+			                    </div>
+							</div>
+							<div class="row">
+								<div class="col-sm-3"></div>
+								<div class="col-sm-5" ng-if="game.winner === 'h'">
+			                   		<strong>{{game.home_team_name}}</strong>
+			                   	</div>
+			                   	<div class="col-sm-5" ng-if="game.winner === 'a'">
+			                   		{{game.home_team_name}}
+			                   	</div>
+			                   	<div class="col-sm-5" ng-if="game.winner === 'u'">
+			                    	{{game.home_team_name}}
+			                    </div>
+			                    <div class="col-sm-4">
+			                    	{{game.linescore.r.home}}
+			                    </div>
+							</div>
+							<div class="row">
+								<div class="col-sm-3"></div>
+								<div class="col-sm-5">{{game.status.status}}</div>
+								<div class="col-sm-4"></div>
+							</div>
+							<hr style="height: 1px" class="col-sm-2">
+						</div>
+					</div>
+					<div class="col-sm-4"></div>
+				</div>
+			</div>
+
+			<!-- Error statement -->
+			<div class="container">
+				<div class="row">
+					<div class="col-sm-12">
+						<p class="center-text" ng-if="gameListView && !gamesList">
+							<strong>There are no games available on this date!</strong>
+						</p>
+					</div>
+				</div>
+			</div>
+
+			<!-- Individual game view -->
+			<div class="container container-fluid" ng-if="!gameListView && gameView">
+				<div class="row">
+					<div class="col-sm-2"></div>
+					<div class="col-sm-8 center-text">
+						<table class="table table-sm no-table-border">
+							<tr>
+								<td></td>
+								<td ng-repeat="iNumber in gameLinescores.linescore">
+		                       		<strong>{{iNumber.inning}}</strong>
+		                       	</td>
+		                       	<td><strong>R</strong></td>
+		                       	<td><strong>H</strong></td>
+		                       	<td><strong>E</strong></td>
+							</tr>
+							<tr>
+	                    		<td><strong>{{teams.away_team_code}}</strong></td>
+		                    	<td ng-repeat="aScore in gameLinescores.linescore">{{aScore.away}}</td>
+		                    	<td>{{gameLinescores.away_team_runs}}</td>
+		                    	<td>{{gameLinescores.away_team_hits}}</td>
+		                    	<td>{{gameLinescores.away_team_errors}}</td>
+		                    </tr>
+		                    <tr>
+		                    	<td><strong>{{teams.home_team_code}}</strong></td>
+		                    	<td ng-repeat="hScore in gameLinescores.linescore">{{hScore.home}}</td>
+		                    	<td>{{gameLinescores.home_team_runs}}</td>
+		                    	<td>{{gameLinescores.home_team_hits}}</td>
+		                    	<td>{{gameLinescores.home_team_errors}}</td>
+		                    </tr>
+						</table>
+					</div>
+					<div class="col-sm-2"></div>
+				</div>
+				<div class="row">
+					<div class="col-sm-12 center-text">
+						<a class="team-design" ng-click="showTeamPlayers('away')">
+		        			{{teams.away_sname}}
+			        	</a>&nbsp;&nbsp;|&nbsp;&nbsp; 
+			        	<a class="team-design" ng-click="showTeamPlayers('home')">
+			        		{{teams.home_sname}}
+			        	</a>
+					</div>
+		        </div>
+		        </br>
+		        <div class="row">
+		        	<div class="col-sm-2"></div>
+		        	<div class="col-sm-8 center-text">
+		        		<table class="table table-sm no-table-border">
+							<thead>
+								<tr>
+									<th><strong>Name</strong></th>
+									<th><strong>AB</strong></th>
+									<th><strong>R</strong></th>
+									<th><strong>H</strong></th>
+									<th><strong>RBI</strong></th>
+									<th><strong>BB</strong></th>
+									<th><strong>SO</strong></th>
+									<th><strong>AVG</strong></th>
+								</tr>
+							</thead>
+			                <tbody>
+			                    <tr class="hover_obj" data-toggle="modal" 
+			                       	data-target="#statsModal" ng-click="playerStats(player)"
+			                       	ng-repeat="player in teamPlayers">
+			                    	<!-- Opens player modal -->
+			                       	<td>{{player.name}}</td>
+			                       	<td>{{player.ab}}</td>
+			                       	<td>{{player.r}}</td>
+			                       	<td>{{player.h}}</td>
+			                       	<td>{{player.rbi}}</td>
+			                       	<td>{{player.bb}}</td>
+			                       	<td>{{player.so}}</td>
+			                       	<td>{{player.avg}}</td>
+			                    </tr>
+			                </tbody>
+			            </table>
+		        	</div>
+		        	<div class="col-sm-2"></div>
+		        </div>
+			</div>
+
+			<!-- Player modal structure-->
+			<div id="statsModal" class="modal fade" role="dialog">
+				<div class="modal-dialog modal-sm">
+					<!-- Player modal content -->
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal">&times;</button>
+							<h4 class="modal-title"><strong>{{player.fullName}}</strong></h4>
+							<span>{{year}} Season and PostSeason Statistics</span></br>
+						</div>
+						<div class="modal-body">
+							<div class="container container-fluid">
+								<div class="row">
+									<div class="col-sm-2">
+										<strong>Position:&nbsp;</strong>
+									</div>
+									<div class="col-sm-2">
+										{{player.position}}
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-sm-2">
+										<strong>Hits:&nbsp;</strong></br>
+										<strong>RBI:&nbsp;</strong></br>
+										<strong>Walks:&nbsp;</strong></br>
+										<strong>Homeruns:&nbsp;</strong></br>
+										<strong>Strikeouts:&nbsp;</strong></br>
+									</div>
+									<div class="col-sm-2">
+										{{player.season_stats.hits}}</br>
+										{{player.season_stats.rbi}}</br>
+										{{player.season_stats.walks}}</br>
+										{{player.season_stats.homeruns}}</br>
+										{{player.season_stats.strikeouts}}</br>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="modal-footer">
+							<button class="btn btn-default" data-dismiss="modal">
+								<strong>Close</strong>
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Error statement -->
+			<div class="container">
+				<div class="row">
+					<div class="col-sm-12">
+						<p class="center-text" ng-if="!gameView && !gameListView && gamesList">
+							<strong>Individual game information is not available!</strong>
+						</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+
+</html>

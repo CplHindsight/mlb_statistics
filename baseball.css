@@ -1,0 +1,53 @@
+/*Classes*/
+.arrows{
+	font-size: 20px;
+	text-decoration: none;
+}
+.center-text{
+	text-align: center;
+}
+.scroll-div{
+	overflow-y: auto;
+	overflow-x: hidden; 
+	height: 500px;
+}
+.no-table-border td, .no-table-border th{
+	border: none;
+}
+.table th{
+	text-align: center;
+}
+.table{
+	width: 100%;
+}
+.team-design{
+	font-weight: bold;
+	font-size: 20px;
+}
+.gamelist-text-size{
+	font-size: 16px;
+}
+.date-display{
+	margin-top: 50px;
+}
+.hover_obj {
+	background: #fff;
+}
+.hover_obj:hover {
+	background: #ededed;
+	cursor: pointer;
+}
+/*Structure*/
+a:hover{
+	cursor: pointer;
+}
+html {
+    position: relative;
+    min-height: 100%;
+    height: 100%;
+}
+body {
+    margin: 0 0 50px;
+    padding: 25px;
+    height: 100%;
+}
