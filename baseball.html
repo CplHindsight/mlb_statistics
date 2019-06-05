@@ -12,9 +12,9 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <!-- CSS -->
-    <link rel="stylesheet" href="kgBaseball.css">
+    <link rel="stylesheet" href="baseball.css">
     <!-- Scripts -->
-    <script src="kgBaseball.js"></script>
+    <script src="baseball.js"></script>
 </head>
 
 <body>
@@ -47,7 +47,7 @@
 							</div>
 							<!-- Trigger the loadDay function to load # of days in specific month with index -->
 							<div class="form-group" ng-show="monthLoaded">
-								<select class="form-control" ng-model="month" 
+								<select class="form-control" ng-model="month"
 								ng-options="m for m in mArray" ng-change="loadDate('day')"
 								ng-disabled="gameView"></select>
 							</div>
@@ -55,7 +55,7 @@
 								<h4><strong>&nbsp;Day:&nbsp;</strong><h4>
 							</div>
 							<div class="form-group" ng-show="dayLoaded">
-								<select class="form-control" ng-model="day" 
+								<select class="form-control" ng-model="day"
 								ng-options="d for d in dArray" ng-change="dispSearch()"
 								ng-disabled="gameView"></select>
 							</div>
@@ -63,12 +63,12 @@
 								<h4><strong>&nbsp;Favourite Team:&nbsp;</strong><h4>
 							</div>
 							<div class="form-group" ng-show="gameListButton && daySelected">
-								<select class="form-control" ng-model="favouriteTeam" 
-									ng-options="t for t in teamList" 
+								<select class="form-control" ng-model="favouriteTeam"
+									ng-options="t for t in teamList"
 									ng-click="orderByTeam()"></select>
 							</div>
 							<div class="form-group" ng-if="gameListButton && daySelected">
-								&nbsp;<button class="btn btn-default" 
+								&nbsp;<button class="btn btn-default"
 								ng-click="getGameListDataSet(year, month, day)">
 									<strong>Load Data</strong>
 								</button>
@@ -103,7 +103,7 @@
 							</div>
 						</form>
 					</div>
-				</div>	
+				</div>
 			</div>
 			<br>
 
@@ -113,7 +113,7 @@
 					<div class="col-sm-4"></div>
 					<!-- Bolding style conditions for winner based on scores -->
 					<div class="col-sm-4 scroll-div gamelist-text-size">
-						<div class="row hover_obj" ng-repeat="game in listOfGames" 
+						<div class="row hover_obj" ng-repeat="game in listOfGames"
 						ng-click="getGameStatsDataSet(game.game_data_directory)">
 							<div class="row">
 								<div class="col-sm-3"></div>
@@ -205,7 +205,7 @@
 					<div class="col-sm-12 center-text">
 						<a class="team-design" ng-click="showTeamPlayers('away')">
 		        			{{teams.away_sname}}
-			        	</a>&nbsp;&nbsp;|&nbsp;&nbsp; 
+			        	</a>&nbsp;&nbsp;|&nbsp;&nbsp;
 			        	<a class="team-design" ng-click="showTeamPlayers('home')">
 			        		{{teams.home_sname}}
 			        	</a>
@@ -229,7 +229,7 @@
 								</tr>
 							</thead>
 			                <tbody>
-			                    <tr class="hover_obj" data-toggle="modal" 
+			                    <tr class="hover_obj" data-toggle="modal"
 			                       	data-target="#statsModal" ng-click="playerStats(player)"
 			                       	ng-repeat="player in teamPlayers">
 			                    	<!-- Opens player modal -->
