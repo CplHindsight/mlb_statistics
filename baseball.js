@@ -24,14 +24,14 @@ app.controller('mainCtrl', function($scope, gameListFactory, gameViewFactory){
 	$scope.favouriteTeam = "";
 	$scope.player = "";
 
-	var months = ["January", "February", "March", "April", 
-		"May", "June", "July", "August", "September", "October", 
+	var months = ["January", "February", "March", "April",
+		"May", "June", "July", "August", "September", "October",
 		"November", "December"];
 
-	$scope.teamList = ["Angels", "Astros", "Athletics", "Blue Jays", "Braves", "Brewers", 
-		"Cardinals", "Cubs", "Dodgers", "D-backs", "Giants", "Indians", "Mariners", 
-		"Marlins", "Mets", "Nationals", "Orioles", "Padres", "Phillies", "Pirates", 
-		"Rangers", "Rays", "Red Sox", "Reds", "Rockies", "Royals", "Tigers", 
+	$scope.teamList = ["Angels", "Astros", "Athletics", "Blue Jays", "Braves", "Brewers",
+		"Cardinals", "Cubs", "Dodgers", "D-backs", "Giants", "Indians", "Mariners",
+		"Marlins", "Mets", "Nationals", "Orioles", "Padres", "Phillies", "Pirates",
+		"Rangers", "Rays", "Red Sox", "Reds", "Rockies", "Royals", "Tigers",
 		"Twins", "White Sox", "Yankees"];
 
 	//Error display variables
@@ -46,11 +46,12 @@ app.controller('mainCtrl', function($scope, gameListFactory, gameViewFactory){
 	$scope.gameListButton = false;
 
 	//Load pulldown menus for year and month
-	for(var i = 2012; i <= 2017; i++){
+	let now = new Date();
+	for(var i = 2012; i <= now.getFullYear(); i++){
 		$scope.yArray.push(i);
 	}
 	for(var i = 0; i <= 11; i++){
-		$scope.mArray.push(months[i]); 
+		$scope.mArray.push(months[i]);
 	}
 
 	//Method selects new data set based on date chosen from MLB API
@@ -90,7 +91,7 @@ app.controller('mainCtrl', function($scope, gameListFactory, gameViewFactory){
 			});
 		}
 	};
-	
+
 	//Method sets the home and away team and linescore objects and favourite team order
 	$scope.setGameListData = (data)=> {
 		//function to determine if there is a length of an object
@@ -150,17 +151,17 @@ app.controller('mainCtrl', function($scope, gameListFactory, gameViewFactory){
 	//Method orders list of games by favourite team dynamically
 	$scope.orderByTeam = ()=> {
 		for(var i = 0; i < $scope.listOfGames.length; i++){
-				//Set Blue Jays as the favourite team to appear at the 
+				//Set Blue Jays as the favourite team to appear at the
 				//front of the games list array
 				if($scope.favouriteTeam == "" || $scope.favouriteTeam == undefined){
 					$scope.favouriteTeam = "Blue Jays";
 				}
-				if($scope.listOfGames[i].home_team_name == $scope.favouriteTeam 
+				if($scope.listOfGames[i].home_team_name == $scope.favouriteTeam
 					|| $scope.listOfGames[i].away_team_name == $scope.favouriteTeam){
 					var temp = $scope.listOfGames[i];
 					$scope.listOfGames.splice(i, 1);
 					$scope.listOfGames.splice(0, 0, temp);
-				}				
+				}
 			}
 	};
 
@@ -169,7 +170,7 @@ app.controller('mainCtrl', function($scope, gameListFactory, gameViewFactory){
 		if(url !== undefined || url !== ""){
 			gameViewFactory.getData(url).then(function(response){
 				$scope.gameViewDataSet = response;
-				
+
 				//No data available for specific date
 				if($scope.gameViewDataSet == "No individual game view data available"){
 					$scope.gameView = false;
@@ -329,7 +330,7 @@ app.controller('mainCtrl', function($scope, gameListFactory, gameViewFactory){
 			var month = $scope.currDate.getMonth() + 1;
 			var year = $scope.currDate.getFullYear();
 			var daysInMonth = new Date(year, month, 1, -1).getDate();
-			//Ensure that if the day rolls past the end of the month or year, 
+			//Ensure that if the day rolls past the end of the month or year,
 			//the date rolls to the correct date
 			if(day > daysInMonth){
 				day = 1;
@@ -346,7 +347,7 @@ app.controller('mainCtrl', function($scope, gameListFactory, gameViewFactory){
 			var month = $scope.currDate.getMonth() + 1;
 			var year = $scope.currDate.getFullYear();
 			var daysInMonth = new Date(year, month, 1, -1).getDate();
-			//Ensure that if the day rolls past the beginning of the month or year, 
+			//Ensure that if the day rolls past the beginning of the month or year,
 			//the date rolls to the correct date
 			if(day < 1){
 				month--;
@@ -355,7 +356,7 @@ app.controller('mainCtrl', function($scope, gameListFactory, gameViewFactory){
 					year--;
 				}
 				daysInMonth = new Date(year, month, 1, -1).getDate();
-				day = daysInMonth;	
+				day = daysInMonth;
 			}
 			$scope.getGameListDataSet(year, month, day);
 		}
@@ -374,7 +375,7 @@ app.factory('gameListFactory', function($http){
 	var factory = {
 		baseballListData: false,
 		getData: function(y, m, d){
-			return $http.get('http://gd2.mlb.com/components/game/mlb/year_' 
+			return $http.get('http://gd2.mlb.com/components/game/mlb/year_'
 		+ y + '/month_' + m + '/day_' + d + '/master_scoreboard.json')
 			.then(function(response){
 				var data = response.data;
@@ -407,4 +408,3 @@ app.factory('gameViewFactory', function($http){
 	};
 	return factory;
 });
-
